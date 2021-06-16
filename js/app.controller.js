@@ -10,28 +10,12 @@ window.onRemoveLoc = onRemoveLoc;
 window.onSearch = onSearch;
 
 function onInit() {
+	var idx = 0;
 	mapService
 		.initMap()
 		.then((map) => {
 			map.addListener('click', (mapsMouseEvent) => {
-				let infoPopUp;
-				infoPopUp = new google.maps.InfoWindow({
-					content: 'tempName',
-					position: mapsMouseEvent.latLng,
-				});
-				infoPopUp.setContent(
-					JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
-				);
-
-				infoPopUp.open(map);
-				console.log(mapsMouseEvent.latLng);
-				// return mapsMouseEvent.latLng.toJSON();
-				locService.addLoc(
-					'test',
-					mapsMouseEvent.latLng.toJSON().lat,
-					mapsMouseEvent.latLng.toJSON().lng
-				);
-				//BUG - HOW TO CLOSE POPUP
+				onClickMap(mapsMouseEvent, map, idx++);
 			});
 		})
 
@@ -97,30 +81,75 @@ function onGetUserPos() {
 			console.log('err!!!', err);
 		});
 }
-function onPanTo() {
+function onPanTo(lat, lan) {
 	console.log('Panning the Map');
-	mapService.panTo(35.6895, 139.6917);
+	mapService.panTo(lat, lan);
 }
 
-function onClickMap() {
-	//TODO: get location on map (map)
-	//TODO: add marker to the map
-	//TODO: pan map
-	//TODO: add location to locations Array: createLoc
-	//TODO: render
-	renderPage();
+function onClickMap(mapsMouseEvent, map, id) {
+	//add marker to the map
+	let infoPopUp;
+	infoPopUp = new google.maps.InfoWindow({
+		content: 'testing',
+		position: mapsMouseEvent.latLng,
+	});
+	infoPopUp.setContent(
+		JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+	);
+
+	infoPopUp.open(map);
+	console.log(mapsMouseEvent.latLng);
+	// return mapsMouseEvent.latLng.toJSON();
+
+	//saves to Loc service as new loc
+	locService.addLoc(
+		'idx' + id,
+		mapsMouseEvent.latLng.toJSON().lat,
+		mapsMouseEvent.latLng.toJSON().lng
+
+		//BUG - HOW TO CLOSE POPUP?
+	);
+
+	// pan map
+	onPanTo(
+		mapsMouseEvent.latLng.toJSON().lat,
+		mapsMouseEvent.latLng.toJSON().lng
+	);
+
+	//renderings
+	renderPage(
+		mapsMouseEvent.latLng.toJSON().lat,
+		mapsMouseEvent.latLng.toJSON().lng
+	);
 }
 
 function renderPage(lan, lat) {
-	renderMap();
-	renderLocations();
+	// renderMap();
 	renderCurrLoc(lan, lat);
+	renderLocations();
 }
 
-function renderMap() {}
-function renderLocations() {}
+// function renderMap() {}
+function renderLocations() {
+	let strHTML = '';
+	locService.getLocs().then((locs) => {
+		locs.map((loc) => {
+			// console.log(loc);
+			strHTML += `<ul> 
+			<li> Name: ${loc.name} </li>
+			<li> Lat: ${loc.lat} </li>
+			<li> Lng:${loc.lng} </li>
+		</ul>
+		`;
+		});
+		console.log(strHTML);
+		document.querySelector('.locs').innerHTML = strHTML;
+	});
+}
 
 function renderCurrLoc(lan, lat) {
+	console.log('sanity');
+
 	document.querySelector(
 		'.user-pos'
 	).innerText = `Latitude: ${lat} - Longitude: ${lan}`;
