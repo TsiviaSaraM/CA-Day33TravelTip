@@ -6,6 +6,7 @@ window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
+window.onRemoveLoc = onRemoveLoc;
 
 function onInit() {
     mapService.initMap()
@@ -13,6 +14,7 @@ function onInit() {
             console.log('Map is ready');
         })
         .catch(() => console.log('Error: cannot init map'));
+    
 }
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
@@ -33,10 +35,40 @@ function onGetLocs() {
     locService.getLocs()
         .then(locs => {
             console.log('Locations:', locs)
-            document.querySelector('.locs').innerText = JSON.stringify(locs)
+            return renderLocs(locService.locs)
         })
-        //.then renderLocs()
 }
+
+function onRemoveLoc(id){
+    locService.removeLoc(id);
+    renderLocs(locService.locs);
+}
+
+// onRemoveLoc(3)
+
+function renderLocs(locs){
+    console.log('now rendering***', locs);
+
+
+    var strHTML = locs.map(function(loc){
+        var name = loc.name;
+        var weather = loc.weather;
+        var id = loc.id;
+        console.log('now rendering ', name, weather);
+        return `<tr>
+            <td>${name}</td>
+            <td>${weather}</td>
+            <td>
+                <button oncick="">Go</button>
+                <button onclick="onRemoveLoc(${id})" >Delete</button>
+            </td>
+        </tr>`
+    }).join('')
+    document.querySelector('.locs-data').innerHTML = strHTML;
+    console.log('strHTML', strHTML);
+    
+}
+
 
 function onGetUserPos() {
     getPosition()
@@ -54,7 +86,7 @@ function onPanTo() {
     mapService.panTo(35.6895, 139.6917);
 }
 
-//TSIVIA
+
 // function onClickMap(){
 //     get location on map (map)
 //     add marker to the map
@@ -66,9 +98,8 @@ function onPanTo() {
 //     render "you are at..."
 // }
 
-// function renderLocs(locs){
-//     <button onPanTo></button>
-// }
+
+
 
 // function onDelete(loc-id){
 //     -->deleteLoc
