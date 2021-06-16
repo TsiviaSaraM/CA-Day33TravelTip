@@ -14,9 +14,6 @@ function onInit() {
 		.then((map) => {
 			map.addListener('click', (mapsMouseEvent) => {
 				let infoPopUp;
-				// infoPopUp.close();
-				// console.log('clicking!');
-
 				infoPopUp = new google.maps.InfoWindow({
 					content: 'tempName',
 					position: mapsMouseEvent.latLng,
@@ -26,16 +23,15 @@ function onInit() {
 				);
 
 				infoPopUp.open(map);
-				console.log(mapsMouseEvent.latLng.toJSON());
-				return mapsMouseEvent.latLng.toJSON();
-
-				// console.log(infoPopUp);
-				// renderMap();
+				console.log(mapsMouseEvent.latLng);
+				// return mapsMouseEvent.latLng.toJSON();
+				locService.addLoc(
+					'test',
+					mapsMouseEvent.latLng.toJSON().lat,
+					mapsMouseEvent.latLng.toJSON().lng
+				);
+				//BUG - HOW TO CLOSE POPUP
 			});
-		})
-		.then((location) => {
-			console.log(location);
-			//PLACEHOLDER: createLoc(location)
 		})
 
 		.catch((err) => console.log(err));
