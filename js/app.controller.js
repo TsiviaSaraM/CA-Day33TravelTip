@@ -1,6 +1,8 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
+//AIzaSyCuXfnc3e6EHlaEeZSoiXAYSxs6y7SKqIQ
+
 window.onload = onInit;
 window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
@@ -65,7 +67,6 @@ function renderLocs(locs){
         </tr>`
     }).join('')
     document.querySelector('.locs-data').innerHTML = strHTML;
-    console.log('strHTML', strHTML);
     
 }
 
