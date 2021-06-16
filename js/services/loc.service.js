@@ -5,6 +5,7 @@ const LOCS_KEY = 'locations';
 //     { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
 // ]
 
+
 const locs = storageService.load(LOCS_KEY) || [];
 
 export const locService = {
