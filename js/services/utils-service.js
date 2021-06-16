@@ -3,5 +3,5 @@ export const utilsService = {
 }
 
 function getRandomId(){
-    return Math.random() * 1000;
+    return Math.floor(Math.random() * 1000);
 }
