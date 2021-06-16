@@ -52,6 +52,7 @@ main {
 	padding: 10px;
 	border-collapse: collapse;
 	background-color: #C8E0F4;
+	/* display: flex; */
 	
 }
 
@@ -73,4 +74,37 @@ button {
 
 .curr-loc {
 	text-align: left;
+}
+
+.table-buttons {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 950px) {
+	main {
+		flex-direction: column;
+	}
+
+	.table-buttons {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
+	.buttons
+	
+}
+
+@media screen and (max-width: 8600px) {
+	.table-buttons{
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+	}
+
+	main{
+		gap:10px;
+	}
 }
