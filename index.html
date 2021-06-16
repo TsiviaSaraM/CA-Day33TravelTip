@@ -28,7 +28,18 @@
                 
                 <div class="map" id="map" style="width: 100%; height: 400px"></div>
                 <!-- <input oninput="onSearch(this.value)" type="search" /> -->
-            <!-- <div class="table-buttons">    -->
+            <div class="table-buttons">   
+                <div class="locTable">
+                    <table>
+                        <thead>
+                            <th>Name</th>
+                            <th>weather</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tbody class="locs-data"></tbody>
+                    </table>
+                </div>
+
                 <div class="buttons">
                     <input type="search" class="search"/>
                     <button onclick="onSearch()">Search</button>
@@ -40,17 +51,8 @@
                     <button onclick="onPanTo()" class="btn-pan">Pan Map to Tokyo</button>
                     
                 </div>
-                <div class="locTable">
-                    <table>
-                        <thead>
-                            <th>Name</th>
-                            <th>weather</th>
-                            <th>Actions</th>
-                        </thead>
-                        <tbody class="locs-data"></tbody>
-                    </table>
-                </div>
-            <!-- </div>  -->
+                
+            </div> 
 
             </main>
     
