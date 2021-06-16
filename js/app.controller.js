@@ -1,14 +1,13 @@
 import { locService } from './services/loc.service.js';
 import { mapService } from './services/map.service.js';
 
-//AIzaSyCuXfnc3e6EHlaEeZSoiXAYSxs6y7SKqIQ
-
 window.onload = onInit;
 window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
 window.onRemoveLoc = onRemoveLoc;
+window.onSearch = onSearch;
 
 function onInit() {
 	mapService
@@ -67,8 +66,6 @@ function onRemoveLoc(id) {
 // onRemoveLoc(3)
 
 function renderLocs(locs) {
-	console.log('now rendering***', locs);
-
 	var strHTML = locs
 		.map(function (loc) {
 			var name = loc.name;
@@ -129,11 +126,18 @@ function renderCurrLoc(lan, lat) {
 	).innerText = `Latitude: ${lat} - Longitude: ${lan}`;
 }
 
-// function onDelete(loc-id){
-//     -->deleteLoc
-//     if this is curr location, repan to curr location
-//     renderLocs();
-// }
+function onSearch(text) {
+	// console.log("searching... ", text);
+	// return Promise.resolve(text)
+	locService.getSearchData(text);
+	const prm = Promise.resolve(text)
+		.then((res) => {
+			panTo(res.lat, res.lng);
+			addMarker(res);	
+		})
+		
+}
+
 
 // function onSearch(text){
 //     QU what name need to be searched
