@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js';
 import { mapService } from './services/map.service.js';
+import { utilsService } from './services/utils-service.js';
 
 window.onload = onInit;
 window.onAddMarker = onAddMarker;
@@ -14,6 +15,8 @@ function onInit() {
 	mapService
 		.initMap()
 		.then((map) => {
+			onGetLocs();
+			onGetUserPos();
 			map.addListener('click', (mapsMouseEvent) => {
 				onClickMap(mapsMouseEvent, map, idx++);
 			});
@@ -116,6 +119,7 @@ function onClickMap(mapsMouseEvent, map, id) {
 
 	// pan map
 	onPanTo(
+
 		mapsMouseEvent.latLng.toJSON().lat,
 		mapsMouseEvent.latLng.toJSON().lng
 	);
@@ -164,26 +168,20 @@ function renderCurrLoc(lan, lat) {
 	).innerText = `Latitude: ${lat} - Longitude: ${lan}`;
 }
 
-function onSearch(text) {
+function onSearch() {
 	// console.log("searching... ", text);
-	// return Promise.resolve(text)
-	locService.getSearchData(text);
-	const prm = Promise.resolve(text).then((res) => {
-		mapService.panTo(res.lat, res.lng);
-		addMarker(res);
+	var elSearch = document.querySelector('.search');
+	var text = elSearch.value;
+	console.log('searching...', text);
+	const prm = Promise.resolve(text)
+	.then(locService.getSearchData) //(text);
+		.then((res) => {
+			console.log('res', res);
+			mapService.panTo(res.lat, res.lng);
+			mapService.addMarker(res);
+			renderLocs(locService.locs);
+			renderCurrLoc(res.lng, res.lat)
+			
 	});
 }
 
-// function onSearch(text){
-//     QU what name need to be searched
-//      use submit button, later add debounce
-//     -->send to geocode-service & get lat lang
-//     -->add marker
-//     -->pan
-//     -->addLocation
-//
-
-//     render map
-//     render locations table
-
-// }

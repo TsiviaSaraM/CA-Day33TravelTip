@@ -11,3 +11,66 @@ li {
 .locTable {
 	width: 300px;
 }
+
+.container {
+	background-color: #031927;
+	/* background-color: #BA1200; */
+	padding: 75px;
+	text-align: center;
+	box-sizing: border-box;
+	font-family: sans-serif;
+	color: #C8E0F4;
+	/* text: #C8E0F4 */
+}
+
+main {
+	display: flex;
+	gap: 50px;
+	background-color: #BA1200;
+	padding: 25px;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	background-color: #9DD1F1;
+	padding: 15px;
+	border-radius: 10px;
+	border: 1px solid #508AA8;
+	
+}
+
+.map {
+	border-radius: 10px;
+}
+
+.locTable {
+	border:#031927 solid 5px;
+	flex-basis: 1;
+	border-radius: 10px;
+	padding: 10px;
+	border-collapse: collapse;
+	background-color: #C8E0F4;
+	
+}
+
+.locTable td, .locTable th {
+	border: 5px solid #031927;
+	padding: 10px;
+	border-collapse: collapse;
+	background-color: #508AA8;
+}
+
+button {
+	background-color: #C8E0F4;
+	border-radius: 5px;
+	border: 2px solid #031927;
+	/* color: #BA1200; */
+	color: #031927;
+	border: 3px solid #031927;
+}
+
+.curr-loc {
+	text-align: left;
+}
