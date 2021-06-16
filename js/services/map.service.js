@@ -2,11 +2,17 @@ export const mapService = {
 	initMap,
 	addMarker,
 	panTo,
+	// deleteMarker,
 };
 
 var gMap;
 
-function initMap(lat = 32.0749831, lng = 34.9120554) {
+function initMap(lat, lng) {
+	// console.log(lat, lng);
+	if (lat === undefined || lng === undefined) {
+		lat = 32.0749831;
+		lng = 34.9120554;
+	}
 	console.log('InitMap');
 	return _connectGoogleApi().then(() => {
 		console.log('google available');
@@ -18,14 +24,21 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
 	});
 }
 
-function addMarker(loc) {
+function addMarker(loc, name) {
+	console.log('addMarker Loc', loc, name);
 	var marker = new google.maps.Marker({
 		position: loc,
 		map: gMap,
-		title: 'Hello World!',
+		title: name,
 	});
 	return marker;
 }
+
+//  function deleteMarker() {
+
+// 	clearMarkers();
+// 	markers = [];
+//   }
 
 function panTo(lat, lng) {
 	var laLatLng = new google.maps.LatLng(lat, lng);

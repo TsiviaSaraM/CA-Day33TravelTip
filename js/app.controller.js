@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js';
 import { mapService } from './services/map.service.js';
+import { weatherService } from './services/weather-service.js';
 
 window.onload = onInit;
 window.onAddMarker = onAddMarker;
@@ -10,12 +11,11 @@ window.onRemoveLoc = onRemoveLoc;
 window.onSearch = onSearch;
 
 function onInit() {
-	var idx = 0;
 	mapService
 		.initMap()
 		.then((map) => {
 			map.addListener('click', (mapsMouseEvent) => {
-				onClickMap(mapsMouseEvent, map, idx++);
+				onClickMap(mapsMouseEvent, map);
 			});
 		})
 
@@ -30,9 +30,10 @@ function getPosition() {
 	});
 }
 
-function onAddMarker() {
+function onAddMarker(newLat, newLng, name) {
 	console.log('Adding a marker');
-	mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 });
+	console.log(newLat, newLng);
+	mapService.addMarker({ lat: newLat, lng: newLng }, name);
 }
 
 function onGetLocs() {
@@ -45,29 +46,59 @@ function onGetLocs() {
 function onRemoveLoc(id) {
 	locService.removeLoc(id);
 	renderLocs(locService.locs);
+	renderMap();
+}
+
+function renderMap() {
+	getPosition().then((pos) => {
+		// console.log(pos);
+		mapService
+			.initMap(pos.coords.latitude, pos.coords.longitude)
+			.then((map) => {
+				map.addListener('click', (mapsMouseEvent) => {
+					onGetUserPos();
+
+					onClickMap(mapsMouseEvent, map);
+				});
+				locService.getLocs().then((locs) => {
+					locs.forEach((loc) => {
+						onAddMarker(loc.lat, loc.lng, loc.name);
+					});
+				});
+			})
+
+			.catch((err) => console.log(err));
+	});
 }
 
 // onRemoveLoc(3)
 
 function renderLocs(locs) {
-	var strHTML = locs
-		.map(function (loc) {
-			var name = loc.name;
-			var weather = loc.weather;
-			var id = loc.id;
-			console.log('now rendering ', name, weather);
+	Promise.all(
+		locs.map((loc) => {
+			return weatherService.getWeather(loc);
+		})
+	).then((weatherRes) => {
+		var strHTML = locs
+			.map(function (loc, id) {
+				loc.weather = weatherRes[id];
+				var name = loc.name;
 
-			return `<tr>
+				var id = loc.id;
+				// console.log('now rendering ', name, loc.weather);
+
+				return `<tr>
             <td>${name}</td>
-            <td>${weather}</td>
+            <td>${loc.weather}</td>
             <td>
 			<button onclick="onPanTo(${loc.lat},${loc.lng})">Go</button>
-                <button onclick="onRemoveLoc(${id})" >Delete</button>
+                <button onclick="onRemoveLoc(${id})">Delete</button>
             </td>
         </tr>`;
-		})
-		.join('');
-	document.querySelector('.locs-data').innerHTML = strHTML;
+			})
+			.join('');
+		document.querySelector('.locs-data').innerHTML = strHTML;
+	});
 }
 
 function onGetUserPos() {
@@ -89,10 +120,16 @@ function onPanTo(lat, lan) {
 	mapService.panTo(lat, lan);
 }
 
-function onClickMap(mapsMouseEvent, map, id) {
+function onClickMap(mapsMouseEvent, map) {
 	//add marker to the map
 	let infoPopUp;
 	let locName = prompt('Enter Loc Name');
+	onAddMarker(
+		mapsMouseEvent.latLng.toJSON().lat,
+		mapsMouseEvent.latLng.toJSON().lng,
+		locName
+	);
+
 	infoPopUp = new google.maps.InfoWindow({
 		content: locName,
 		position: mapsMouseEvent.latLng,
@@ -102,7 +139,7 @@ function onClickMap(mapsMouseEvent, map, id) {
 	// );
 
 	infoPopUp.open(map);
-	console.log(mapsMouseEvent.latLng);
+	// console.log(mapsMouseEvent.latLng);
 	// return mapsMouseEvent.latLng.toJSON();
 
 	//saves to Loc service as new loc
