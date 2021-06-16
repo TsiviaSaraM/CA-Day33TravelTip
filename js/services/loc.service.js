@@ -1,13 +1,12 @@
 const LOCS_KEY = 'locations';
 const GEOLOC_API = 'AIzaSyCuXfnc3e6EHlaEeZSoiXAYSxs6y7SKqIQ';
 
-// const locs = [
-//     { name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
-//     { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
-// ]
+const locs = [
+	{ name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
+	{ name: 'Neveragain', lat: 32.047201, lng: 34.832581 },
+];
 
-
-const locs = storageService.load(LOCS_KEY) || [];
+// const locs = storageService.load(LOCS_KEY) || [];
 
 export const locService = {
 	addLoc,
@@ -67,21 +66,22 @@ function removeLoc(locId) {
 	storageService.save(LOCS_KEY, locs);
 }
 
-function getSearchData(text){
+function getSearchData(text) {
 	console.log('getting search data');
-	return _loadData('parkway')
-	.then((res)=> {
+	return _loadData('parkway').then((res) => {
 		addLoc(text, res.lat, res.lng);
 		return res;
-	})
+	});
 }
 
-function _loadData(text){
+function _loadData(text) {
 	const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${text}y,&key=${GEOLOC_API}`;
-	return axios.get(url)
-		.then((res) => {// debugger;
+	return axios
+		.get(url)
+		.then((res) => {
+			// debugger;
 			console.log(res.data.results[0].geometry.location);
-			return res.data.results[0].geometry.location
+			return res.data.results[0].geometry.location;
 		})
-		.catch((err) => console.log('error: ', err))
+		.catch((err) => console.log('error: ', err));
 }

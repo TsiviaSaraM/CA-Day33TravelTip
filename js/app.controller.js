@@ -56,11 +56,12 @@ function renderLocs(locs) {
 			var weather = loc.weather;
 			var id = loc.id;
 			console.log('now rendering ', name, weather);
+
 			return `<tr>
             <td>${name}</td>
             <td>${weather}</td>
             <td>
-                <button oncick="">Go</button>
+			<button onclick="onPanTo(${loc.lat},${loc.lng})">Go</button>
                 <button onclick="onRemoveLoc(${id})" >Delete</button>
             </td>
         </tr>`;
@@ -128,26 +129,29 @@ function onClickMap(mapsMouseEvent, map, id) {
 
 function renderPage(lan, lat) {
 	// renderMap();
+
 	renderCurrLoc(lan, lat);
-	renderLocations();
+	renderLocs(locService.locs);
+	// renderLocations();
+	// renderLocs(locService.locs);
 }
 
 // function renderMap() {}
 function renderLocations() {
 	let strHTML = '';
-	let itemNum = 1;
+	// let itemNum = 1;
 	locService.getLocs().then((locs) => {
 		locs.map((loc) => {
 			strHTML += `<ul> 
-			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Location Number ${itemNum} </li>
+			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Location Number ${loc.id} </li>
 			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Location Name: ${loc.name} </li>
 			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Lat: ${loc.lat} </li>
 			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Lng:${loc.lng} </li>
 		</ul>
 		`;
-			itemNum++;
+			// itemNum++;
 		});
-		// console.log(strHTML);
+		console.log(strHTML);
 		document.querySelector('.locs').innerHTML = strHTML;
 	});
 }
@@ -164,14 +168,11 @@ function onSearch(text) {
 	// console.log("searching... ", text);
 	// return Promise.resolve(text)
 	locService.getSearchData(text);
-	const prm = Promise.resolve(text)
-		.then((res) => {
-			panTo(res.lat, res.lng);
-			addMarker(res);	
-		})
-		
+	const prm = Promise.resolve(text).then((res) => {
+		mapService.panTo(res.lat, res.lng);
+		addMarker(res);
+	});
 }
-
 
 // function onSearch(text){
 //     QU what name need to be searched
