@@ -2,9 +2,10 @@ const LOCS_KEY = 'locations';
 const GEOLOC_API = 'AIzaSyCuXfnc3e6EHlaEeZSoiXAYSxs6y7SKqIQ';
 
 const locs = [
-	{ name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
-	{ name: 'Neveragain', lat: 32.047201, lng: 34.832581 },
-];
+    { name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
+    { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
+]
+
 
 // const locs = storageService.load(LOCS_KEY) || [];
 
@@ -21,7 +22,6 @@ import { storageService } from './storage-service.js';
 import { utilsService } from './utils-service.js';
 
 function addLoc(name, lat, lng) {
-	console.log('adding locs');
 	var loc = {
 		id: utilsService.getRandomId(),
 		name,
@@ -31,9 +31,10 @@ function addLoc(name, lat, lng) {
 		createdAt: Date.now(),
 		updatedAt: Date.now(),
 	};
-
+	
 	locs.push(loc);
 	storageService.save(LOCS_KEY, locs);
+	console.log('adding locs');
 }
 
 function _testFunctions() {
