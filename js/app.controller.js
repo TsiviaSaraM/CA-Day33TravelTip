@@ -66,10 +66,10 @@ function renderLocs(locs) {
                 <button oncick="">Go</button>
                 <button onclick="onRemoveLoc(${id})" >Delete</button>
             </td>
-        </tr>`
-    }).join('')
-    document.querySelector('.locs-data').innerHTML = strHTML;
-    
+        </tr>`;
+		})
+		.join('');
+	document.querySelector('.locs-data').innerHTML = strHTML;
 }
 
 function onGetUserPos() {
@@ -79,7 +79,9 @@ function onGetUserPos() {
 			document.querySelector(
 				'.user-pos'
 			).innerText = `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`;
+			onPanTo(pos.coords.latitude, pos.coords.longitude);
 		})
+
 		.catch((err) => {
 			console.log('err!!!', err);
 		});
@@ -92,13 +94,14 @@ function onPanTo(lat, lan) {
 function onClickMap(mapsMouseEvent, map, id) {
 	//add marker to the map
 	let infoPopUp;
+	let locName = prompt('Enter Loc Name');
 	infoPopUp = new google.maps.InfoWindow({
-		content: 'testing',
+		content: locName,
 		position: mapsMouseEvent.latLng,
 	});
-	infoPopUp.setContent(
-		JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
-	);
+	// infoPopUp.setContent(
+	// 	JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+	// );
 
 	infoPopUp.open(map);
 	console.log(mapsMouseEvent.latLng);
@@ -106,7 +109,7 @@ function onClickMap(mapsMouseEvent, map, id) {
 
 	//saves to Loc service as new loc
 	locService.addLoc(
-		'idx' + id,
+		locName,
 		mapsMouseEvent.latLng.toJSON().lat,
 		mapsMouseEvent.latLng.toJSON().lng
 
@@ -135,17 +138,19 @@ function renderPage(lan, lat) {
 // function renderMap() {}
 function renderLocations() {
 	let strHTML = '';
+	let itemNum = 1;
 	locService.getLocs().then((locs) => {
 		locs.map((loc) => {
-			// console.log(loc);
 			strHTML += `<ul> 
-			<li> Name: ${loc.name} </li>
-			<li> Lat: ${loc.lat} </li>
-			<li> Lng:${loc.lng} </li>
+			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Location Number ${itemNum} </li>
+			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Location Name: ${loc.name} </li>
+			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Lat: ${loc.lat} </li>
+			<li onclick="onPanTo(${loc.lat},${loc.lng})"> Lng:${loc.lng} </li>
 		</ul>
 		`;
+			itemNum++;
 		});
-		console.log(strHTML);
+		// console.log(strHTML);
 		document.querySelector('.locs').innerHTML = strHTML;
 	});
 }
