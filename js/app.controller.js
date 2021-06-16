@@ -6,6 +6,7 @@ window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
+window.onRemoveLoc = onRemoveLoc;
 
 function onInit() {
 	mapService
@@ -56,9 +57,38 @@ function onAddMarker() {
 function onGetLocs() {
 	locService.getLocs().then((locs) => {
 		console.log('Locations:', locs);
-		document.querySelector('.locs').innerText = JSON.stringify(locs);
+		return renderLocs(locService.locs);
 	});
-	//.then renderLocs()
+}
+
+function onRemoveLoc(id) {
+	locService.removeLoc(id);
+	renderLocs(locService.locs);
+}
+
+// onRemoveLoc(3)
+
+function renderLocs(locs) {
+	console.log('now rendering***', locs);
+
+	var strHTML = locs
+		.map(function (loc) {
+			var name = loc.name;
+			var weather = loc.weather;
+			var id = loc.id;
+			console.log('now rendering ', name, weather);
+			return `<tr>
+            <td>${name}</td>
+            <td>${weather}</td>
+            <td>
+                <button oncick="">Go</button>
+                <button onclick="onRemoveLoc(${id})" >Delete</button>
+            </td>
+        </tr>`;
+		})
+		.join('');
+	document.querySelector('.locs-data').innerHTML = strHTML;
+	console.log('strHTML', strHTML);
 }
 
 function onGetUserPos() {
@@ -101,10 +131,6 @@ function renderCurrLoc(lan, lat) {
 		'.user-pos'
 	).innerText = `Latitude: ${lat} - Longitude: ${lan}`;
 }
-
-// function renderLocs(locs){
-//     <button onPanTo></button>
-// }
 
 // function onDelete(loc-id){
 //     -->deleteLoc
