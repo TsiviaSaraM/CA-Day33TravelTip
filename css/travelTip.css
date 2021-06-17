@@ -93,8 +93,10 @@ button {
 		align-items: flex-start;
 	}
 
-	.buttons
-	
+	/* .buttons {
+
+	}
+	 */
 }
 
 @media screen and (max-width: 8600px) {
